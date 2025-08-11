@@ -41,7 +41,7 @@ if uploaded_file:
         )
 
         # Eingangsausrichtung berücksichtigen
-        if input_alignment == "rechtsbündig":
+        if input_alignment == "rechtsbündig (Senvion, Enercon, Vestas)":
             df["timestamp"] -= timedelta(minutes=10)
 
         # Nur benötigte Spalten behalten
@@ -84,7 +84,7 @@ if uploaded_file:
         df_out = pd.DataFrame(results, columns=["timestamp", "Wind Speed (avg)"])
 
         # Ausgangsausrichtung berücksichtigen
-        if output_alignment == "rechtsbündig":
+        if output_alignment == "rechtsbündig (Standard":
             df_out["timestamp"] += timedelta(minutes=15)
 
         st.subheader("Ergebnis")
@@ -107,4 +107,5 @@ if uploaded_file:
 
 
         
+
 
