@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import timedelta
 
-st.title("10-min → 15-min Winddaten Umrechner")
+st.title("10-min → 15-min Winddaten-Umrechner (gewichtet)")
 
 # Datei-Upload
 uploaded_file = st.file_uploader("CSV-Datei hochladen", type=["csv"])
@@ -10,12 +10,12 @@ uploaded_file = st.file_uploader("CSV-Datei hochladen", type=["csv"])
 # Ausrichtung-Auswahl
 input_alignment = st.selectbox(
     "Ausrichtung der Eingangsdaten (10-min-Werte)",
-    ["rechtsbündig", "linksbündig"]
+    ["rechtsbündig (Senvion, Enercon, Vestas)", "linksbündig (Nordex)"]
 )
 
 output_alignment = st.selectbox(
     "Ausrichtung der Ausgangsdaten (15-min-Werte)",
-    ["rechtsbündig", "linksbündig"]
+    ["rechtsbündig (Standard)", "linksbündig"]
 )
 
 if uploaded_file:
@@ -107,3 +107,4 @@ if uploaded_file:
 
 
         
+
