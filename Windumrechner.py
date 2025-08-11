@@ -84,7 +84,7 @@ if uploaded_file:
         df_out = pd.DataFrame(results, columns=["timestamp", "Wind Speed (avg)"])
 
         # Ausgangsausrichtung berücksichtigen
-        if output_alignment == "rechtsbündig (Standard":
+        if output_alignment == "rechtsbündig (Standard)":
             df_out["timestamp"] += timedelta(minutes=15)
 
         st.subheader("Ergebnis")
@@ -107,5 +107,6 @@ if uploaded_file:
 
 
         
+
 
 
