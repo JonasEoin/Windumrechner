@@ -32,9 +32,9 @@ if uploaded_file:
         st.error(f"Fehlende Spalten. Erwartet werden: {', '.join(required_cols)}")
     else:
         # Timestamp erstellen
-        df["timestamp"] = pd.to_datetime(
-            df["Datum (Anlage)"] + " " + df["Zeit (Anlage)"],
-            format="%d.%m.%Y %H:%M:%S"
+        df["timestamp"] = pd.to_datetime(df["Datum (Anlage)"] + " " + df["Zeit (Anlage)"],
+                                         dayfirst=True,  # Wichtig für deutsches Datumsformat (01.07.2025)
+                                         errors="raise"  # oder "coerce" für stilles Überspringen fehlerhafter Zeilen
         )
 
         # Ausrichtung der Eingangsdaten berücksichtigen
@@ -95,3 +95,4 @@ if uploaded_file:
             file_name="wind_15min.csv",
             mime="text/csv"
         )
+
