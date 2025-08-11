@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import timedelta
 
-st.title("Windumrechner 10-min → 15-min (gewichtet)")
+st.title("10-min → 15-min Winddaten Umrechner")
 
 # Datei-Upload
 uploaded_file = st.file_uploader("CSV-Datei hochladen", type=["csv"])
@@ -10,17 +10,17 @@ uploaded_file = st.file_uploader("CSV-Datei hochladen", type=["csv"])
 # Ausrichtung-Auswahl
 input_alignment = st.selectbox(
     "Ausrichtung der Eingangsdaten (10-min-Werte)",
-    ["rechtsbündig (Senvion, Enercon, Vestas)", "linksbündig (Nordex)"]
+    ["rechtsbündig", "linksbündig"]
 )
 
 output_alignment = st.selectbox(
     "Ausrichtung der Ausgangsdaten (15-min-Werte)",
-    ["rechtsbündig (Standard)", "linksbündig"]
+    ["rechtsbündig", "linksbündig"]
 )
 
 if uploaded_file:
-    # CSV einlesen
-    df = pd.read_csv(
+    # Rohdaten einlesen (immer unverändert)
+    df_raw = pd.read_csv(
         uploaded_file,
         sep=";",
         decimal=","
@@ -28,16 +28,19 @@ if uploaded_file:
 
     # Spalten prüfen
     required_cols = ["Datum (Anlage)", "Zeit (Anlage)", "Wind Speed (avg)"]
-    if not all(col in df.columns for col in required_cols):
+    if not all(col in df_raw.columns for col in required_cols):
         st.error(f"Fehlende Spalten. Erwartet werden: {', '.join(required_cols)}")
     else:
+        # Kopie der Rohdaten für Berechnung
+        df = df_raw.copy()
+
         # Timestamp erstellen
         df["timestamp"] = pd.to_datetime(df["Datum (Anlage)"] + " " + df["Zeit (Anlage)"],
                                          dayfirst=True,  # Wichtig für deutsches Datumsformat (01.07.2025)
                                          errors="raise"  # oder "coerce" für stilles Überspringen fehlerhafter Zeilen
         )
 
-        # Ausrichtung der Eingangsdaten berücksichtigen
+        # Eingangsausrichtung berücksichtigen
         if input_alignment == "rechtsbündig":
             df["timestamp"] -= timedelta(minutes=10)
 
@@ -53,7 +56,7 @@ if uploaded_file:
         while current_time < end_time:
             interval_end = current_time + timedelta(minutes=15)
 
-            # Filter Daten innerhalb dieses Intervalls
+            # Alle relevanten 10-min-Daten finden (max. 10 Min Überhang)
             mask = (df["timestamp"] >= current_time) & (df["timestamp"] < interval_end + timedelta(minutes=10))
             subset = df[mask]
 
@@ -80,7 +83,7 @@ if uploaded_file:
 
         df_out = pd.DataFrame(results, columns=["timestamp", "Wind Speed (avg)"])
 
-        # Ausrichtung der Ausgangsdaten berücksichtigen
+        # Ausgangsausrichtung berücksichtigen
         if output_alignment == "rechtsbündig":
             df_out["timestamp"] += timedelta(minutes=15)
 
@@ -96,3 +99,11 @@ if uploaded_file:
             mime="text/csv"
         )
 
+        
+
+
+
+
+
+
+        
