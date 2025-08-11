@@ -31,6 +31,9 @@ if uploaded_file:
     if not all(col in df_raw.columns for col in required_cols):
         st.error(f"Fehlende Spalten. Erwartet werden: {', '.join(required_cols)}")
     else:
+        # Leere Messwerte durch 0 ersetzen
+        df_raw["Wind Speed (avg)"] = pd.to_numeric(df_raw["Wind Speed (avg)"], errors="coerce").fillna(0)
+        
         # Kopie der Rohdaten für Berechnung
         df = df_raw.copy()
 
@@ -107,6 +110,7 @@ if uploaded_file:
 
 
         
+
 
 
 
