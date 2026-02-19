@@ -27,7 +27,7 @@ if uploaded_file:
     )
 
     # Spalten prüfen
-    required_cols = ["Datum (Anlage)", "Zeit (Anlage)", "Wind Speed (avg)"]
+    required_cols = ["Datum (UTC, Anlage)", "Zeit (UTC, Anlage)", "Wind Speed (avg)"]
     if not all(col in df_raw.columns for col in required_cols):
         st.error(f"Fehlende Spalten. Erwartet werden: {', '.join(required_cols)}")
     else:
@@ -38,7 +38,7 @@ if uploaded_file:
         df = df_raw.copy()
 
         # Timestamp erstellen
-        df["timestamp"] = pd.to_datetime(df["Datum (Anlage)"] + " " + df["Zeit (Anlage)"],
+        df["timestamp"] = pd.to_datetime(df["Datum (UTC, Anlage)"] + " " + df["Zeit (UTC, Anlage)"],
                                          dayfirst=True,  # Wichtig für deutsches Datumsformat (01.07.2025)
                                          errors="raise"  # oder "coerce" für stilles Überspringen fehlerhafter Zeilen
         )
@@ -90,6 +90,10 @@ if uploaded_file:
         if output_alignment == "rechtsbündig (Standard)":
             df_out["timestamp"] += timedelta(minutes=15)
 
+        # Zeitstempel formateiren
+
+        df_out["timestamp"] = df_out["timestamp"].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
         st.subheader("Ergebnis")
         st.dataframe(df_out)
 
@@ -110,6 +114,7 @@ if uploaded_file:
 
 
         
+
 
 
 
